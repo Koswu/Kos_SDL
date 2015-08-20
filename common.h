@@ -8,3 +8,6 @@
 #include <SDL/SDL_mixer.h>
 
 
+/*函数声明*/
+char * Kos_itoa(int num,char *str,int radix);
+
