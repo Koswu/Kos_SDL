@@ -1,30 +1,58 @@
-// The functions contained in this file are pretty dummy
-// and are included only as a placeholder. Nevertheless,
-// they *will* get included in the static library if you
-// don't remove them :)
-// 
-// Obviously, you 'll have to write yourself the super-duper
-// functions to include in the resulting library...
-// Also, it's not necessary to write every function in this file.
-// Feel free to add more files in this project. They will be
-// included in the resulting library.
+/*头文件声明*/
+#include "common.h"
+#include "error.h"
 
-// A function adding two integers and returning the result
-int SampleAddInt(int i1, int i2)
+/*全局变量*/
+static bool IS_INIT_FONT=false;//字体加载状态
+SDL_Surface* Kos_SDL_Screen=NULL;//屏幕表面
+SDL_Event Kos_SDL_NowEvent;//事件类型
+int Kos_SCREEN_WIDTH=0, Kos_SCREEN_WIDTH=0;
+/*报错函数*/
+void Error (int errorcode)
 {
-    return i1 + i2;
+	if (IS_INIT_FONT)
+	{
+// do Foo
+	}
+	Clean_Up();
+	exit (errorcode);
 }
-
-// A function doing nothing ;)
-void SampleFunction1()
+/*初始化*/
+void Kos_SDL_Init (int Width,int Height)
 {
-    // insert code here
+	/*初始化SDL所有子系统*/
+	if (SDL_Init(SDL_INIT_EVERYTHING)<0)
+	{
+		Error (ERROR_INIT_SDL);
+	}
+	/*初始化字体系统*/
+	if( TTF_Init() <0)
+    {
+    	Error (ERROR_INIT_FONTLIB);
+    }
+    /*初始化声音系统*/
+    if (Mix_OpenAudio(44100,MIX_DEFAULT_FORMAT,2,1024)<0)
+    {
+    	Error (ERROR_INIT_MIXLIB);
+    }
+    if (Mix_Init(MIX_INIT_MP3)<0)
+    {
+    	Error (ERROR_INIT_MIXLIB);
+    }
+	/*初始化屏幕表面*/
+	Kos_SDL_Screen=SDL_SetVideoMode(Width,Height,SDL_ANYFORMAT,SDL_HWSURFACE|SDL_DOUBLEBUF);
+	if (Kos_SDL_Screen==NULL)
+	{
+		exit (ERROR_INIT_SDL);
+	}
+	Kos_SCREEN_WIDTH=Width;
+	Kos_SCREEN_WIDTH=Height;
 }
-
-// A function always returning zero
-int SampleFunction2()
+/*清理函数*/
+void Clean_UP ()
 {
-    // insert code here
-    
-    return 0;
+    Mix_CloseAudio();
+	Mix_Quit();
+	SDL_Quit();
+	TTF_Quit();
 }
