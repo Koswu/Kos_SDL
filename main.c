@@ -4,9 +4,10 @@
 
 SDL_Surface* Kos_SDL_Screen=NULL;//屏幕表面
 SDL_Event Kos_SDL_NowEvent;//事件类型
-int Kos_SCREEN_WIDTH, Kos_SCREEN_HEIGHT;
-TTF_Font * Kos_Default_Font=NULL;
-const SDL_Color Kos_ErrorColor={0xFF,0,0};
+int Kos_SCREEN_WIDTH, Kos_SCREEN_HEIGHT;//窗口长宽
+TTF_Font * Kos_Default_Font=NULL;//默认字体
+const SDL_Color Kos_ErrorColor={0xFF,0,0};//报错时的字体颜色
+int FRAME_PER_SECOND=0;
 
 /*报错函数*/
 void Kos_Error (int errorcode)
@@ -16,23 +17,23 @@ void Kos_Error (int errorcode)
 	    SDL_Surface * error;
 	    char errormessage[50]="Error!";
 	    char errorchar[10];
-	    error=Print_Text(errormessage);
+	    error=Kos_Render_UTF8Text(Kos_Default_Font,errormessage,Kos_ErrorColor);
 	    SDL_FillRect(Kos_SDL_Screen,&(Kos_SDL_Screen->clip_rect),SDL_MapRGB(Kos_SDL_Screen->format,0xFF,0xFF,0xFF));
-	    CopyToSurface((Kos_SCREEN_WIDTH-error->w)/2,(Kos_SCREEN_HEIGHT-error->h)/2-error->h-20,error,Kos_SDL_Screen,NULL);
+	    Kos_CopyToSurface((Kos_SCREEN_WIDTH-error->w)/2,(Kos_SCREEN_HEIGHT-error->h)/2-error->h-20,error,Kos_SDL_Screen,NULL);
 	    SDL_FreeSurface(error);
-	    strcpy (errormessage,"The program will exit after 20s");
-	    error=Print_Text(errormessage);
-	    CopyToSurface((Kos_SCREEN_WIDTH-error->w)/2,(Kos_SCREEN_HEIGHT-error->h)/2,error,Kos_SDL_Screen,NULL);
+	    strcpy (errormessage,"The program will exit after 10s");
+	    error=Kos_Render_UTF8Text(Kos_Default_Font,errormessage,Kos_ErrorColor);
+	    Kos_CopyToSurface((Kos_SCREEN_WIDTH-error->w)/2,(Kos_SCREEN_HEIGHT-error->h)/2,error,Kos_SDL_Screen,NULL);
 	    SDL_FreeSurface(error);
 	    strcpy (errormessage,"Error：0x");
 	    Kos_itoa (errorcode,errorchar,16);
 	    strcat (errormessage,errorchar);
-	    error=Print_Text(errormessage);
-	    CopyToSurface((Kos_SCREEN_WIDTH-error->w)/2,(Kos_SCREEN_HEIGHT-error->h)/2+error->h+20,error,Kos_SDL_Screen,NULL);
+	    error=Kos_Render_UTF8Text(Kos_Default_Font,errormessage,Kos_ErrorColor);
+	    Kos_CopyToSurface((Kos_SCREEN_WIDTH-error->w)/2,(Kos_SCREEN_HEIGHT-error->h)/2+error->h+20,error,Kos_SDL_Screen,NULL);
 	    SDL_FreeSurface(error);
-	    SDL_Delay(2000);
+	    SDL_Delay(10000);
 	}
-	Clean_Up();
+	Kos_Clean_Up();
 	exit (errorcode);
 }
 /*初始化*/
@@ -77,7 +78,7 @@ void Kos_Clean_Up ()
 }
 
 /*优化加载图片*/
-SDL_Surface * Load_Image(char path[])
+SDL_Surface * Kos_Load_Image(char path[])
 {
 	SDL_Surface * oldimage=NULL;
 	SDL_Surface * newimage=NULL;
@@ -101,7 +102,7 @@ void Kos_CopyToSurface(int x,int y,SDL_Surface * source,SDL_Surface * target,SDL
 }
 
 /*加载音乐*/
-Mix_Music *Kos_Load_Music (char * path)
+Mix_Music *Kos_Load_MP3_Music (char * path)
 {
 	Mix_Music* music=NULL;
 	music=Mix_LoadMUS (path);
@@ -113,7 +114,7 @@ Mix_Music *Kos_Load_Music (char * path)
 }
 
 /*加载音效*/
-Mix_Chunk *Kos_Load_Chunk (char * path)
+Mix_Chunk * Kos_Load_Chunk (char * path)
 {
 	Mix_Chunk * chunk=NULL;
 	chunk=Mix_LoadWAV (path);
@@ -124,13 +125,35 @@ Mix_Chunk *Kos_Load_Chunk (char * path)
 	return chunk;
 }
 
+/*设置默认字体*/
+void Kos_Set_DefaultFont(char path[])
+{
+    Kos_Default_Font=Kos_Load_Font(path,20);
+}
 
+/*加载字体*/
+TTF_Font * Kos_Load_Font (char path[],int size)
+{
+    TTF_Font * temp;
+    temp=TTF_OpenFont(path,size);
+    if (temp==NULL)
+    {
+        Kos_Error(KOS_ERROR_LOADFONT);
+    }
+    return temp;
+}
 
-
-
-
-
-
+/*渲染UTF8文字*/
+SDL_Surface * Kos_Render_UTF8Text(TTF_Font * font,char text[],SDL_Color Textcolor)
+{
+    SDL_Surface * textface;
+	textface=TTF_RenderUTF8_Solid(font,text,Textcolor);
+	if (textface==NULL)
+	{
+		Kos_Error (KOS_ERROR_RENDERTEXT);
+	}
+	return textface;
+}
 
 /*数字转字符串*/
 char * Kos_itoa(int num,char *str,int radix)
