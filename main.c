@@ -12,7 +12,7 @@ int FRAME_PER_SECOND=0;
 /*报错函数*/
 void Kos_Error (int errorcode)
 {
-	if (Kos_Default_Font!=NULL&&errorcode>100&&errorcode<200)//处理严重错误
+	if (Kos_Default_Font!=NULL&&errorcode>100&&errorcode<200)//处理严重错误，10秒后自动退出
 	{
 	    SDL_Surface * error;
 	    char errormessage[50]="Error!";
@@ -32,6 +32,38 @@ void Kos_Error (int errorcode)
 	    Kos_CopyToSurface((Kos_SCREEN_WIDTH-error->w)/2,(Kos_SCREEN_HEIGHT-error->h)/2+error->h+20,error,Kos_SDL_Screen,NULL);
 	    SDL_FreeSurface(error);
 	    SDL_Delay(10000);
+	}
+	else if (Kos_Default_Font!=NULL&&errorcode>200)//处理一般错误，提示后任意键结束
+	{
+	    SDL_Surface * error;
+	    bool quit=false;
+	    char errormessage[50]="Little Error!";
+	    char errorchar[10];
+	    error=Kos_Render_UTF8Text(Kos_Default_Font,errormessage,Kos_ErrorColor);
+	    SDL_FillRect(Kos_SDL_Screen,&(Kos_SDL_Screen->clip_rect),SDL_MapRGB(Kos_SDL_Screen->format,0xFF,0xFF,0xFF));
+	    Kos_CopyToSurface((Kos_SCREEN_WIDTH-error->w)/2,(Kos_SCREEN_HEIGHT-error->h)/2-error->h-20,error,Kos_SDL_Screen,NULL);
+	    SDL_FreeSurface(error);
+	    strcpy (errormessage,"Please enter any key or touch screen to continue");
+	    error=Kos_Render_UTF8Text(Kos_Default_Font,errormessage,Kos_ErrorColor);
+	    Kos_CopyToSurface((Kos_SCREEN_WIDTH-error->w)/2,(Kos_SCREEN_HEIGHT-error->h)/2,error,Kos_SDL_Screen,NULL);
+	    SDL_FreeSurface(error);
+	    strcpy (errormessage,"Error：0x");
+	    Kos_itoa (errorcode,errorchar,16);
+	    strcat (errormessage,errorchar);
+	    error=Kos_Render_UTF8Text(Kos_Default_Font,errormessage,Kos_ErrorColor);
+	    Kos_CopyToSurface((Kos_SCREEN_WIDTH-error->w)/2,(Kos_SCREEN_HEIGHT-error->h)/2+error->h+20,error,Kos_SDL_Screen,NULL);
+	    SDL_FreeSurface(error);
+	    while (quit==false)
+	    {
+	        while (SDL_PollEvent(&Kos_SDL_NowEvent))
+	        {
+	            if (Kos_SDL_NowEvent.type==SDL_KEYDOWN||Kos_SDL_NowEvent.type==SDL_MOUSEBUTTONDOWN)
+	            {
+	                quit=true;
+	            }
+	        }
+	    }
+	    return;
 	}
 	Kos_Clean_Up();
 	exit (errorcode);
@@ -153,6 +185,24 @@ SDL_Surface * Kos_Render_UTF8Text(TTF_Font * font,char text[],SDL_Color Textcolo
 		Kos_Error (KOS_ERROR_RENDERTEXT);
 	}
 	return textface;
+}
+
+/*渲染ASCII文字*/
+SDL_Surface * Kos_Render_ASCIIText(TTF_Font * font,char text[],SDL_Color Textcolor)
+{
+    SDL_Surface * textface;
+	textface=TTF_RenderText_Solid(font,text,Textcolor);
+	if (textface==NULL)
+	{
+		Kos_Error (KOS_ERROR_RENDERTEXT);
+	}
+	return textface;
+}
+
+/*设置背景色*/
+void Kos_Set_ScreenColor (unsigned short r,unsigned short g,unsigned short b)
+{
+	SDL_FillRect(Kos_SDL_Screen,&(Kos_SDL_Screen->clip_rect),SDL_MapRGB(Kos_SDL_Screen->format,r,g,b));
 }
 
 /*数字转字符串*/
