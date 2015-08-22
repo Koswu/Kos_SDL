@@ -14,43 +14,43 @@ void Kos_Error (int errorcode)
 {
 	if (Kos_Default_Font!=NULL&&errorcode>100&&errorcode<200)//处理严重错误，10秒后自动退出
 	{
-	    SDL_Surface * error;
-	    char errormessage[50]="Error!";
-	    error=Kos_Render_UTF8Text(Kos_Default_Font,errormessage,Kos_ErrorColor);
-	    SDL_FillRect(Kos_SDL_Screen,&(Kos_SDL_Screen->clip_rect),SDL_MapRGB(Kos_SDL_Screen->format,0xFF,0xFF,0xFF));
-	    Kos_BlitToScreen((Kos_SCREEN_WIDTH-error->w)/2,(Kos_SCREEN_HEIGHT-error->h)/2-error->h-20,error,NULL);
-	    SDL_FreeSurface(error);
-	    strcpy (errormessage,"The program will exit after 10s");
-	    error=Kos_Render_UTF8Text(Kos_Default_Font,errormessage,Kos_ErrorColor);
-	    Kos_BlitToScreen((Kos_SCREEN_WIDTH-error->w)/2,(Kos_SCREEN_HEIGHT-error->h)/2,error,NULL);
-	    SDL_FreeSurface(error);
-	    sprintf (errormessage,"Errorcode:%X",errorcode);
-	    error=Kos_Render_UTF8Text(Kos_Default_Font,errormessage,Kos_ErrorColor);
-	    Kos_BlitToScreen((Kos_SCREEN_WIDTH-error->w)/2,(Kos_SCREEN_HEIGHT-error->h)/2+error->h+20,error,NULL);
-	    SDL_FreeSurface(error);
-	    SDL_Delay(10000);
+        SDL_Surface * error;
+        char errormessage[50]="Error!";
+        error=Kos_Render_UTF8Text(Kos_Default_Font,errormessage,Kos_ErrorColor);
+        SDL_FillRect(Kos_SDL_Screen,&(Kos_SDL_Screen->clip_rect),SDL_MapRGB(Kos_SDL_Screen->format,0xFF,0xFF,0xFF));
+        Kos_BlitToScreen((Kos_SCREEN_WIDTH-error->w)/2,(Kos_SCREEN_HEIGHT-error->h)/2-error->h-20,error,NULL);
+        SDL_FreeSurface(error);
+        strcpy (errormessage,"The program will exit after 10s");
+        error=Kos_Render_UTF8Text(Kos_Default_Font,errormessage,Kos_ErrorColor);
+        Kos_BlitToScreen((Kos_SCREEN_WIDTH-error->w)/2,(Kos_SCREEN_HEIGHT-error->h)/2,error,NULL);
+        SDL_FreeSurface(error);
+        sprintf (errormessage,"Errorcode:%X",errorcode);
+        error=Kos_Render_UTF8Text(Kos_Default_Font,errormessage,Kos_ErrorColor);
+        Kos_BlitToScreen((Kos_SCREEN_WIDTH-error->w)/2,(Kos_SCREEN_HEIGHT-error->h)/2+error->h+20,error,NULL);
+        SDL_FreeSurface(error);
+        SDL_Delay(10000);
 	}
 	else if (Kos_Default_Font!=NULL&&errorcode>200)//处理一般错误，提示后任意键结束
 	{
-	    SDL_Surface * error;
-	    bool quit=false;
-	    char errormessage[50]="Little Error!";
-	    error=Kos_Render_UTF8Text(Kos_Default_Font,errormessage,Kos_ErrorColor);
-	    SDL_FillRect(Kos_SDL_Screen,&(Kos_SDL_Screen->clip_rect),SDL_MapRGB(Kos_SDL_Screen->format,0xFF,0xFF,0xFF));
-	    Kos_BlitToScreen((Kos_SCREEN_WIDTH-error->w)/2,(Kos_SCREEN_HEIGHT-error->h)/2-error->h-20,error,NULL);
-	    SDL_FreeSurface(error);
-	    strcpy (errormessage,"Please enter any key or touch screen to continue");
-	    error=Kos_Render_UTF8Text(Kos_Default_Font,errormessage,Kos_ErrorColor);
-	    Kos_BlitToScreen((Kos_SCREEN_WIDTH-error->w)/2,(Kos_SCREEN_HEIGHT-error->h)/2,error,NULL);
-	    SDL_FreeSurface(error);
-	    sprintf (errormessage,"Errorcode:%X",errorcode);
-	    error=Kos_Render_UTF8Text(Kos_Default_Font,errormessage,Kos_ErrorColor);
-	    Kos_BlitToScreen((Kos_SCREEN_WIDTH-error->w)/2,(Kos_SCREEN_HEIGHT-error->h)/2+error->h+20,error,NULL);
-	    SDL_FreeSurface(error);
-	    while (quit==false)
-	    {
-	        while (SDL_PollEvent(&Kos_SDL_NowEvent))
-	        {
+        SDL_Surface * error;
+        bool quit=false;
+        char errormessage[50]="Little Error!";
+        error=Kos_Render_UTF8Text(Kos_Default_Font,errormessage,Kos_ErrorColor);
+        SDL_FillRect(Kos_SDL_Screen,&(Kos_SDL_Screen->clip_rect),SDL_MapRGB(Kos_SDL_Screen->format,0xFF,0xFF,0xFF));
+        Kos_BlitToScreen((Kos_SCREEN_WIDTH-error->w)/2,(Kos_SCREEN_HEIGHT-error->h)/2-error->h-20,error,NULL);
+        SDL_FreeSurface(error);
+        strcpy (errormessage,"Please enter any key or touch screen to continue");
+        error=Kos_Render_UTF8Text(Kos_Default_Font,errormessage,Kos_ErrorColor);
+        Kos_BlitToScreen((Kos_SCREEN_WIDTH-error->w)/2,(Kos_SCREEN_HEIGHT-error->h)/2,error,NULL);
+        SDL_FreeSurface(error);
+        sprintf (errormessage,"Errorcode:%X",errorcode);
+        error=Kos_Render_UTF8Text(Kos_Default_Font,errormessage,Kos_ErrorColor);
+        Kos_BlitToScreen((Kos_SCREEN_WIDTH-error->w)/2,(Kos_SCREEN_HEIGHT-error->h)/2+error->h+20,error,NULL);
+        SDL_FreeSurface(error);
+        while (quit==false)
+        {
+        while (SDL_PollEvent(&Kos_SDL_NowEvent))
+            {
 	            if (Kos_SDL_NowEvent.type==SDL_KEYDOWN||Kos_SDL_NowEvent.type==SDL_MOUSEBUTTONDOWN)
 	            {
 	                quit=true;
@@ -67,57 +67,57 @@ void Kos_SDL_Init (int Width,int Height,char tittle[])
 {
 	/*初始化SDL所有子系统*/
 	if (SDL_Init(SDL_INIT_EVERYTHING)<0)
-	{
-		Kos_Error (KOS_ERROR_INIT_SDL);
+    {
+        Kos_Error (KOS_ERROR_INIT_SDL);
 	}
 	/*初始化字体系统*/
 	if( TTF_Init() <0)
     {
-    	Kos_Error (KOS_ERROR_INIT_FONTLIB);
+        Kos_Error (KOS_ERROR_INIT_FONTLIB);
     }
     /*初始化声音系统*/
     if (Mix_OpenAudio(44100,MIX_DEFAULT_FORMAT,2,1024)<0)
     {
-    	Kos_Error (KOS_ERROR_INIT_MIXLIB);
+        Kos_Error (KOS_ERROR_INIT_MIXLIB);
     }
     if (Mix_Init(MIX_INIT_MP3)<0)
     {
-    	Kos_Error (KOS_ERROR_INIT_MIXLIB);
+        Kos_Error (KOS_ERROR_INIT_MIXLIB);
     }
 	/*初始化屏幕表面*/
-	Kos_SDL_Screen=SDL_SetVideoMode(Width,Height,SDL_ANYFORMAT,SDL_HWSURFACE|SDL_DOUBLEBUF);
+    Kos_SDL_Screen=SDL_SetVideoMode(Width,Height,SDL_ANYFORMAT,SDL_HWSURFACE|SDL_DOUBLEBUF);
 	if (Kos_SDL_Screen==NULL)//抛出错误
 	{
-		Kos_Error (KOS_ERROR_INIT_SDL);
+        Kos_Error (KOS_ERROR_INIT_SDL);
 	}
-	SDL_WM_SetCaption(tittle,NULL);
-	Kos_SCREEN_WIDTH=Width;
-	Kos_SCREEN_WIDTH=Height;
-	Kos_FPStime=Kos_Fliptime=SDL_GetTicks();
+    SDL_WM_SetCaption(tittle,NULL);
+    Kos_SCREEN_WIDTH=Width;
+    Kos_SCREEN_WIDTH=Height;
+    Kos_FPStime=Kos_Fliptime=SDL_GetTicks();
 }
 
 /*清理函数*/
 void Kos_Clean_Up (void)
 {
     Mix_CloseAudio();
-	Mix_Quit();
-	SDL_Quit();
-	TTF_Quit();
+    Mix_Quit();
+    SDL_Quit();
+    TTF_Quit();
 }
 
 /*优化加载图片*/
 SDL_Surface * Kos_Load_Image(char path[])
 {
-	SDL_Surface * oldimage=NULL;
-	SDL_Surface * newimage=NULL;
-	oldimage=IMG_Load(path);
-	if (oldimage==NULL)
-	{
-		Kos_Error (KOS_ERROR_LOADIMG);
+    SDL_Surface * oldimage=NULL;
+    SDL_Surface * newimage=NULL;
+    oldimage=IMG_Load(path);
+    if (oldimage==NULL)
+    {
+        Kos_Error (KOS_ERROR_LOADIMG);
 	}
-	newimage=SDL_DisplayFormat(oldimage);
-	SDL_FreeSurface(oldimage);
-	return newimage;
+    newimage=SDL_DisplayFormat(oldimage);
+    SDL_FreeSurface(oldimage);
+    return newimage;
 }
 
 /*拷贝至表面*/
