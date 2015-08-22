@@ -7,7 +7,7 @@ SDL_Event Kos_SDL_NowEvent;//事件类型
 int Kos_SCREEN_WIDTH, Kos_SCREEN_HEIGHT;//窗口长宽
 TTF_Font * Kos_Default_Font=NULL;//默认字体
 const SDL_Color Kos_ErrorColor={0xFF,0,0};//报错时的字体颜色
-int FRAME_PER_SECOND=0;
+int Kos_Fliptime,Kos_FPStime;//刷新时间
 
 /*报错函数*/
 void Kos_Error (int errorcode)
@@ -19,17 +19,17 @@ void Kos_Error (int errorcode)
 	    char errorchar[10];
 	    error=Kos_Render_UTF8Text(Kos_Default_Font,errormessage,Kos_ErrorColor);
 	    SDL_FillRect(Kos_SDL_Screen,&(Kos_SDL_Screen->clip_rect),SDL_MapRGB(Kos_SDL_Screen->format,0xFF,0xFF,0xFF));
-	    Kos_CopyToSurface((Kos_SCREEN_WIDTH-error->w)/2,(Kos_SCREEN_HEIGHT-error->h)/2-error->h-20,error,Kos_SDL_Screen,NULL);
+	    Kos_BlitToScreen((Kos_SCREEN_WIDTH-error->w)/2,(Kos_SCREEN_HEIGHT-error->h)/2-error->h-20,error,NULL);
 	    SDL_FreeSurface(error);
 	    strcpy (errormessage,"The program will exit after 10s");
 	    error=Kos_Render_UTF8Text(Kos_Default_Font,errormessage,Kos_ErrorColor);
-	    Kos_CopyToSurface((Kos_SCREEN_WIDTH-error->w)/2,(Kos_SCREEN_HEIGHT-error->h)/2,error,Kos_SDL_Screen,NULL);
+	    Kos_BlitToScreen((Kos_SCREEN_WIDTH-error->w)/2,(Kos_SCREEN_HEIGHT-error->h)/2,error,NULL);
 	    SDL_FreeSurface(error);
 	    strcpy (errormessage,"Error：0x");
 	    Kos_itoa (errorcode,errorchar,16);
 	    strcat (errormessage,errorchar);
 	    error=Kos_Render_UTF8Text(Kos_Default_Font,errormessage,Kos_ErrorColor);
-	    Kos_CopyToSurface((Kos_SCREEN_WIDTH-error->w)/2,(Kos_SCREEN_HEIGHT-error->h)/2+error->h+20,error,Kos_SDL_Screen,NULL);
+	    Kos_BlitToScreen((Kos_SCREEN_WIDTH-error->w)/2,(Kos_SCREEN_HEIGHT-error->h)/2+error->h+20,error,NULL);
 	    SDL_FreeSurface(error);
 	    SDL_Delay(10000);
 	}
@@ -41,17 +41,17 @@ void Kos_Error (int errorcode)
 	    char errorchar[10];
 	    error=Kos_Render_UTF8Text(Kos_Default_Font,errormessage,Kos_ErrorColor);
 	    SDL_FillRect(Kos_SDL_Screen,&(Kos_SDL_Screen->clip_rect),SDL_MapRGB(Kos_SDL_Screen->format,0xFF,0xFF,0xFF));
-	    Kos_CopyToSurface((Kos_SCREEN_WIDTH-error->w)/2,(Kos_SCREEN_HEIGHT-error->h)/2-error->h-20,error,Kos_SDL_Screen,NULL);
+	    Kos_BlitToScreen((Kos_SCREEN_WIDTH-error->w)/2,(Kos_SCREEN_HEIGHT-error->h)/2-error->h-20,error,NULL);
 	    SDL_FreeSurface(error);
 	    strcpy (errormessage,"Please enter any key or touch screen to continue");
 	    error=Kos_Render_UTF8Text(Kos_Default_Font,errormessage,Kos_ErrorColor);
-	    Kos_CopyToSurface((Kos_SCREEN_WIDTH-error->w)/2,(Kos_SCREEN_HEIGHT-error->h)/2,error,Kos_SDL_Screen,NULL);
+	    Kos_BlitToScreen((Kos_SCREEN_WIDTH-error->w)/2,(Kos_SCREEN_HEIGHT-error->h)/2,error,NULL);
 	    SDL_FreeSurface(error);
 	    strcpy (errormessage,"Error：0x");
 	    Kos_itoa (errorcode,errorchar,16);
 	    strcat (errormessage,errorchar);
 	    error=Kos_Render_UTF8Text(Kos_Default_Font,errormessage,Kos_ErrorColor);
-	    Kos_CopyToSurface((Kos_SCREEN_WIDTH-error->w)/2,(Kos_SCREEN_HEIGHT-error->h)/2+error->h+20,error,Kos_SDL_Screen,NULL);
+	    Kos_BlitToScreen((Kos_SCREEN_WIDTH-error->w)/2,(Kos_SCREEN_HEIGHT-error->h)/2+error->h+20,error,NULL);
 	    SDL_FreeSurface(error);
 	    while (quit==false)
 	    {
@@ -69,7 +69,7 @@ void Kos_Error (int errorcode)
 	exit (errorcode);
 }
 /*初始化*/
-void Kos_SDL_Init (int Width,int Height)
+void Kos_SDL_Init (int Width,int Height,char tittle[])
 {
 	/*初始化SDL所有子系统*/
 	if (SDL_Init(SDL_INIT_EVERYTHING)<0)
@@ -96,12 +96,14 @@ void Kos_SDL_Init (int Width,int Height)
 	{
 		Kos_Error (KOS_ERROR_INIT_SDL);
 	}
+	SDL_WM_SetCaption(tittle,NULL);
 	Kos_SCREEN_WIDTH=Width;
 	Kos_SCREEN_WIDTH=Height;
+	Kos_FPStime=Kos_Fliptime=SDL_GetTicks();
 }
 
 /*清理函数*/
-void Kos_Clean_Up ()
+void Kos_Clean_Up (void)
 {
     Mix_CloseAudio();
 	Mix_Quit();
@@ -125,12 +127,12 @@ SDL_Surface * Kos_Load_Image(char path[])
 }
 
 /*拷贝至表面*/
-void Kos_CopyToSurface(int x,int y,SDL_Surface * source,SDL_Surface * target,SDL_Rect * cli)
+void Kos_BlitToScreen(int x,int y,SDL_Surface * source,SDL_Rect * cli)
 {
 	SDL_Rect location;
 	location.x=x;
 	location.y=y;
-	SDL_BlitSurface(source,cli,target,&location);
+	SDL_BlitSurface(source,cli,Kos_SDL_Screen,&location);
 }
 
 /*加载音乐*/
@@ -164,10 +166,10 @@ void Kos_Set_DefaultFont(char path[])
 }
 
 /*加载字体*/
-TTF_Font * Kos_Load_Font (char path[],int size)
+TTF_Font * Kos_Load_Font (char path[],int fontsize)
 {
     TTF_Font * temp;
-    temp=TTF_OpenFont(path,size);
+    temp=TTF_OpenFont(path,fontsize);
     if (temp==NULL)
     {
         Kos_Error(KOS_ERROR_LOADFONT);
@@ -205,18 +207,42 @@ void Kos_Set_ScreenColor (unsigned short r,unsigned short g,unsigned short b)
 	SDL_FillRect(Kos_SDL_Screen,&(Kos_SDL_Screen->clip_rect),SDL_MapRGB(Kos_SDL_Screen->format,r,g,b));
 }
 
-/*数字转字符串*/
-char * Kos_itoa(int num,char *str,int radix)
+
+/*按指定帧率刷新屏幕*/
+void Kos_TimeFlipScreen(int frame_per_second)
 {
-//num：int型原数,str:需转换成的string，radix,原进制，
-/* 索引表 */
-char index[]="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-unsigned unum;
-/* 中间变量 */
- int i=0,j,k;
-  /* 确定unum的值 */
-  if(radix==10&&num<0){
-  	/* 十进制负数 */
-  	unum=(unsigned)-num; str[i++]='-'; }
-  	else unum=(unsigned)num;/* 其他情况 */ /* 逆序 */ do{ str[i++]=index[unum%(unsigned)radix]; unum/=radix; }while(unum); str[i]='\0'; /* 转换 */ if(str[0]=='-') k=1;/* 十进制负数 */ else k=0; /* 将原来的“/2”改为“/2.0”，保证当num在16~255之间，radix等于16时，也能得到正确结果 */ for(j=k;j<(i-1)/2.0+k;j++){ num=str[j]; str[j]=str[i-j-1+k]; str[i-j-1+k]=num; } return str;
+    if ((SDL_GetTicks()-Kos_Fliptime)<(1000/frame_per_second))
+    {
+        SDL_Delay (1000/frame_per_second-(SDL_GetTicks()-Kos_Fliptime));
+    }
+    Kos_Fliptime=SDL_GetTicks();
+    if (SDL_Flip(Kos_SDL_Screen)<0)
+    {
+        Kos_Error(KOS_ERROR_FLIPSCREEN);
+    }
 }
+
+/*刷新屏幕*/
+void Kos_FlipScreen (void)
+{
+    if (SDL_Flip(Kos_SDL_Screen)<0)
+    {
+        Kos_Error(KOS_ERROR_FLIPSCREEN);
+    }
+}
+
+/*打印FPS*/
+void Kos_BlitFPS (int FPSsize,SDL_Color FPScolor)
+{
+    char fpschar[10];
+    int nowtime=SDL_GetTicks();
+    sprintf (fpschar,"FPS:%.2f",1000.0/(nowtime-Kos_FPStime));
+    if (Kos_Default_Font==NULL)
+    {
+        Kos_Error(KOS_ERROR_PRINTFPS);
+    }
+    SDL_Surface * fpsface=Kos_Render_ASCIIText (Kos_Default_Font,fpschar,FPScolor);
+    Kos_BlitToScreen(Kos_SCREEN_WIDTH-fpsface->w,0,fpsface,NULL);
+    Kos_FPStime=nowtime;
+}
+
