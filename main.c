@@ -16,7 +16,6 @@ void Kos_Error (int errorcode)
 	{
 	    SDL_Surface * error;
 	    char errormessage[50]="Error!";
-	    char errorchar[10];
 	    error=Kos_Render_UTF8Text(Kos_Default_Font,errormessage,Kos_ErrorColor);
 	    SDL_FillRect(Kos_SDL_Screen,&(Kos_SDL_Screen->clip_rect),SDL_MapRGB(Kos_SDL_Screen->format,0xFF,0xFF,0xFF));
 	    Kos_BlitToScreen((Kos_SCREEN_WIDTH-error->w)/2,(Kos_SCREEN_HEIGHT-error->h)/2-error->h-20,error,NULL);
@@ -25,9 +24,7 @@ void Kos_Error (int errorcode)
 	    error=Kos_Render_UTF8Text(Kos_Default_Font,errormessage,Kos_ErrorColor);
 	    Kos_BlitToScreen((Kos_SCREEN_WIDTH-error->w)/2,(Kos_SCREEN_HEIGHT-error->h)/2,error,NULL);
 	    SDL_FreeSurface(error);
-	    strcpy (errormessage,"Error：0x");
-	    Kos_itoa (errorcode,errorchar,16);
-	    strcat (errormessage,errorchar);
+	    sprintf (errormessage,"Errorcode:%X",errorcode);
 	    error=Kos_Render_UTF8Text(Kos_Default_Font,errormessage,Kos_ErrorColor);
 	    Kos_BlitToScreen((Kos_SCREEN_WIDTH-error->w)/2,(Kos_SCREEN_HEIGHT-error->h)/2+error->h+20,error,NULL);
 	    SDL_FreeSurface(error);
@@ -38,7 +35,6 @@ void Kos_Error (int errorcode)
 	    SDL_Surface * error;
 	    bool quit=false;
 	    char errormessage[50]="Little Error!";
-	    char errorchar[10];
 	    error=Kos_Render_UTF8Text(Kos_Default_Font,errormessage,Kos_ErrorColor);
 	    SDL_FillRect(Kos_SDL_Screen,&(Kos_SDL_Screen->clip_rect),SDL_MapRGB(Kos_SDL_Screen->format,0xFF,0xFF,0xFF));
 	    Kos_BlitToScreen((Kos_SCREEN_WIDTH-error->w)/2,(Kos_SCREEN_HEIGHT-error->h)/2-error->h-20,error,NULL);
@@ -47,9 +43,7 @@ void Kos_Error (int errorcode)
 	    error=Kos_Render_UTF8Text(Kos_Default_Font,errormessage,Kos_ErrorColor);
 	    Kos_BlitToScreen((Kos_SCREEN_WIDTH-error->w)/2,(Kos_SCREEN_HEIGHT-error->h)/2,error,NULL);
 	    SDL_FreeSurface(error);
-	    strcpy (errormessage,"Error：0x");
-	    Kos_itoa (errorcode,errorchar,16);
-	    strcat (errormessage,errorchar);
+	    sprintf (errormessage,"Errorcode:%X",errorcode);
 	    error=Kos_Render_UTF8Text(Kos_Default_Font,errormessage,Kos_ErrorColor);
 	    Kos_BlitToScreen((Kos_SCREEN_WIDTH-error->w)/2,(Kos_SCREEN_HEIGHT-error->h)/2+error->h+20,error,NULL);
 	    SDL_FreeSurface(error);

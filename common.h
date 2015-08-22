@@ -9,7 +9,6 @@
 
 
 /*函数声明*/
-char * Kos_itoa(int num,char *str,int radix);
 TTF_Font * Kos_Load_Font (char path[],int fontsize);
 SDL_Surface * Kos_Render_UTF8Text(TTF_Font * font,char text[],SDL_Color Textcolor);
 void Kos_CopyToSurface(int x,int y,SDL_Surface * source,SDL_Surface * target,SDL_Rect * cli);
