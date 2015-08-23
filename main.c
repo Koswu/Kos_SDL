@@ -240,3 +240,21 @@ void Kos_BlitFPS (int FPSsize,SDL_Color FPScolor)
     Kos_FPStime=nowtime;
 }
 
+/*播放音乐*/
+void Kos_PlayMusic (Mix_Music* music,int playcount)
+{
+    if (Mix_PlayMusic(music,playcount)<0)
+	{
+		Kos_Error(KOS_ERROR_PLAYMUSIC);
+	}
+}
+
+
+/*播放音效*/
+void Kos_PlayChunk (Mix_Chunk *chunk,int playcount)
+{
+    if (Mix_PlayChannel(-1,chunk,playcount-1)<0)
+    {
+        Kos_Error(KOS_ERROR_PLAYCHUNK);
+    }
+}

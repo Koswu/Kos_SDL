@@ -6,6 +6,22 @@
 #include <SDL/SDL_ttf.h>
 #include <SDL/SDL_mixer.h>
 
+/*错误常量声明*/
+#define KOS_ERROR_INIT_SDL 1
+#define KOS_ERROR_SETVIDEOMOD 2
+#define KOS_ERROR_COPYSURFACE 3
+#define KOS_ERROR_INIT_FONTLIB 4
+#define KOS_ERROR_RENDERTEXT 5
+#define KOS_ERROR_FLIPSCREEN 6
+#define KOS_ERROR_INIT_IMGLIB 101
+#define KOS_ERROR_INIT_MIXLIB 102
+#define KOS_ERROR_LOADIMG 201
+#define KOS_ERROR_LOADMUSIC 202
+#define KOS_ERROR_LOADCHUNK 203
+#define KOS_ERROR_PLAYMUSIC 204
+#define KOS_ERROR_PLAYCHUNK 205
+#define KOS_ERROR_LOADFONT 206
+#define KOS_ERROR_PRINTFPS 207
 
 /*函数声明*/
 
@@ -140,3 +156,4 @@ void Kos_PlayMusic (Mix_Music* music,int playcount);
     函数返回值：无
 */
 void Kos_PlayChunk (Mix_Chunk *chunk,int playcount);
+
