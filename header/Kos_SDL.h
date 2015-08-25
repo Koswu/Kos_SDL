@@ -6,6 +6,13 @@
 #include <SDL/SDL_ttf.h>
 #include <SDL/SDL_mixer.h>
 
+/*全局变量声明*/
+extern SDL_Surface* Kos_SDL_Screen;//屏幕表面
+extern SDL_Event Kos_SDL_NowEvent;//事件类型
+extern int Kos_SCREEN_WIDTH, Kos_SCREEN_HEIGHT;//窗口长宽
+extern TTF_Font * Kos_Default_Font=NULL;//默认字体
+extern int Kos_Fliptime,Kos_FPStime;//刷新时间
+
 /*错误常量声明*/
 #define KOS_ERROR_INIT_SDL 1
 #define KOS_ERROR_SETVIDEOMOD 2
