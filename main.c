@@ -67,7 +67,7 @@ void Kos_SDL_Init (int Width,int Height,char tittle[])
 {
 	/*初始化SDL所有子系统*/
 	if (SDL_Init(SDL_INIT_EVERYTHING)<0)
-    {
+       {
         Kos_Error (KOS_ERROR_INIT_SDL);
 	}
 	/*初始化字体系统*/
@@ -85,7 +85,7 @@ void Kos_SDL_Init (int Width,int Height,char tittle[])
         Kos_Error (KOS_ERROR_INIT_MIXLIB);
     }
 	/*初始化屏幕表面*/
-    Kos_SDL_Screen=SDL_SetVideoMode(Width,Height,SDL_ANYFORMAT,SDL_HWSURFACE|SDL_DOUBLEBUF);
+    Kos_SDL_Screen=SDL_SetVideoMode(Width,Height,32,SDL_HWSURFACE|SDL_DOUBLEBUF);
 	if (Kos_SDL_Screen==NULL)//抛出错误
 	{
         Kos_Error (KOS_ERROR_INIT_SDL);
