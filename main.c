@@ -28,6 +28,7 @@ void Kos_Error (int errorcode)
         error=Kos_Render_UTF8Text(Kos_Default_Font,errormessage,Kos_ErrorColor);
         Kos_BlitToScreen((Kos_SCREEN_WIDTH-error->w)/2,(Kos_SCREEN_HEIGHT-error->h)/2+error->h+20,error,NULL);
         SDL_FreeSurface(error);
+        Kos_FlipScreen();
         SDL_Delay(10000);
 	}
 	else if (Kos_Default_Font!=NULL&&errorcode>200)//处理一般错误，提示后任意键结束
@@ -47,6 +48,7 @@ void Kos_Error (int errorcode)
         error=Kos_Render_UTF8Text(Kos_Default_Font,errormessage,Kos_ErrorColor);
         Kos_BlitToScreen((Kos_SCREEN_WIDTH-error->w)/2,(Kos_SCREEN_HEIGHT-error->h)/2+error->h+20,error,NULL);
         SDL_FreeSurface(error);
+        Kos_FlipScreen();
         while (quit==false)
         {
         while (SDL_PollEvent(&Kos_SDL_NowEvent))
@@ -92,7 +94,7 @@ void Kos_SDL_Init (int Width,int Height,char tittle[])
 	}
     SDL_WM_SetCaption(tittle,NULL);
     Kos_SCREEN_WIDTH=Width;
-    Kos_SCREEN_WIDTH=Height;
+    Kos_SCREEN_HEIGHT=Height;
     Kos_FPStime=Kos_Fliptime=SDL_GetTicks();
 }
 
@@ -115,7 +117,7 @@ SDL_Surface * Kos_Load_Image(char path[])
     {
         Kos_Error (KOS_ERROR_LOADIMG);
 	}
-    newimage=SDL_DisplayFormat(oldimage);
+    newimage=SDL_DisplayFormatAlpha(oldimage);
     SDL_FreeSurface(oldimage);
     return newimage;
 }
