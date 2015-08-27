@@ -37,3 +37,4 @@ example/*.o
 *.depend
 *.save
 *.layout
+*~
