@@ -101,6 +101,7 @@ void Kos_SDL_Init (int Width,int Height,char tittle[])
 /*清理函数*/
 void Kos_Clean_Up (void)
 {
+    TTF_CloseFont(Kos_Default_Font);
     Mix_CloseAudio();
     Mix_Quit();
     SDL_Quit();
